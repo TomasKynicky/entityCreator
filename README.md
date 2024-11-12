@@ -66,4 +66,3 @@ $arrayData = [
 ];
 
 $entity = EntityCreator::fromArray($arrayData);
-echo $entity->getName(); // Outputs: John Doe
