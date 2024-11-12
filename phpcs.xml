@@ -1,0 +1,12 @@
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Custom Ruleset">
+    <file>./src</file>
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg value="p"/>
+    <arg value="s"/>
+
+    <rule ref="./vendor/arxeiss/coding-standards/Rules/phpcs-spaces.xml">
+        <exclude name="Generic.Files.LineLength.MaxExceeded"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions.NonFullyQualified"/>
+    </rule>
+</ruleset>
