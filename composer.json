@@ -1,0 +1,22 @@
+{
+    "name": "TomasKynicky/entityCreator",
+    "description": "Array to entity",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "arxeiss/coding-standards": "^0.12.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
