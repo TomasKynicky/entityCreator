@@ -18,7 +18,7 @@ that work with structured Array data. Streamline your workflow and keep your cod
 Install via Composer:
 
 ```bash
-composer require TomasKynicky/entitycreator
+composer require tomaskynicky/entity-creator
 ```
 
 ## 📄 License
