@@ -1,5 +1,5 @@
 {
-    "name": "TomasKynicky/entitycreator",
+    "name": "tomaskynicky/entity-creator",
     "description": "Array to entity",
     "type": "library",
     "autoload": {
