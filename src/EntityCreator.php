@@ -6,7 +6,7 @@ use Tomaskynicky\EntityCreator\DTO\EntityDTO;
 use Tomaskynicky\EntityCreator\Enum\DataType;
 use Tomaskynicky\EntityCreator\Enum\RelationType;
 
-final class EntityCreator implements EntityCreatorInterface
+final class EntityCreator
 {
 
 	public static function entityCreator(EntityDTO $entityDTO): void
