@@ -18,52 +18,27 @@ that work with structured Array data. Streamline your workflow and keep your cod
 Install via Composer:
 
 ```bash
-composer require tomaskynicky/entity-creator
+composer require tomaskynicky/entity-creator:dev-main
 ```
 
 ## 📄 License
 
 This package is open-source software licensed under the [MIT license]
 
-## 🖥️ Usage
+## 🖥️ Input
 
 ```php
-use App\EntityCreator;
 
-$arrayData = [
-     "Products" => [
-         "id" => [
-            "type" => "ID",
-            "nullable" => false,
-            ],
-         "title" => [
-               "type" => "string",
-                "length" => 255,
-                "nullable" => false,
-            ],
-         "price" => [
-            "type" => "float",
-            "length" => 10,
-            "nullable" => false,
-            ],
-     ]
-     "Orders" => [
-         "id" => [
-            "type" => "ID",
-            "nullable" => false,
-            ],
-         "products" => [
-               "type" => "Products",
-                "nullable" => false,
-                "relation" => "ManyToOne"
-            ],
-         "price" => [
-            "type" => "float",
-            "length" => 10,
-            "nullable" => false,
-            ],
-     ]
-];
-
-$entity = EntityCreator::fromArray($arrayData);
-echo $entity->getName(); // Outputs: John Doe
+		$arrayData = [
+			new EntityDTO(
+				name: 'User',
+				fields: [
+					new FieldsDTO(
+						name: 'name',
+						type: DataType::STRING,
+						length: '255',
+						nullable: true
+					)
+				]
+			),
+		];
