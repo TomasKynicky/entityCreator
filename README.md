@@ -28,7 +28,6 @@ This package is open-source software licensed under the [MIT license]
 ## 🖥️ Input
 
 ```php
-
 		$arrayData = [
 			new EntityDTO(
 				name: 'User',
