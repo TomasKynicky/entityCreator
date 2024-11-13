@@ -10,15 +10,9 @@ final readonly class FieldsDTO
 
 	public function __construct(
 		private string $name,
-		/**
-		 * @var DataType[]
-		 */
-		private array $type,
+		private DataType $type,
 		private ?string $length = null,
-		/**
-		 * @var RelationType[]
-		 */
-		private ?array $relation = null,
+		private ?RelationType $relation = null,
 		private ?bool $nullable = false,
 	)
 	{
@@ -32,10 +26,7 @@ final readonly class FieldsDTO
 		return $this->name;
 	}
 
-	/**
-	 * @return DataType[]
-	 */
-	public function getType(): array
+	public function getType(): DataType
 	{
 		return $this->type;
 	}
@@ -48,10 +39,7 @@ final readonly class FieldsDTO
 		return $this->length;
 	}
 
-	/**
-	 * @return RelationType[] | null
-	 */
-	public function getRelation(): ?array
+	public function getRelation(): ?RelationType
 	{
 		return $this->relation;
 	}

@@ -13,7 +13,6 @@ final class EntityCreator
 	{
 		self::entityRenderer($entityDTO);
 	}
-
 	private static function entityRenderer(EntityDTO $entityDTO): bool
 	{
 		$className = ucfirst($entityDTO->getName());
@@ -24,51 +23,55 @@ final class EntityCreator
 		$properties = '';
 		$methods = '';
 
-		foreach ($entityDTO->getFields() as $fieldName => $attributes) {
-			$nullable = $attributes['nullable'] ? '?' : '';
-			$defaultValue = $attributes['nullable'] ? ' = null' : '';
-			$type = DataType::from($attributes['type'])->value;
+		foreach ($entityDTO->getFields() as $field) {
+			$nullable = $field->getNullable() ? '?' : '';
+			$defaultValue = $field->getNullable() ? ' = null' : '';
+			$type = $field->getType()->value;
 			$ormColumn = "";
 
-			if (isset($attributes['relation'])) {
-				$relation = RelationType::from($attributes['relation'])->value;
-				$ormColumn = "#[ORM\\{$relation}(inversedBy: '{$entityName}')]\n    #[ORM\\JoinColumn(name: '{$fieldName}_id', referencedColumnName: 'id', nullable: " . ($attributes['nullable'] ? 'true' : 'false') . ")]";
+			if ($field->getRelation() !== null) {
+				$relation = $field->getRelation()->value;
+				$ormColumn = "#[ORM\\{$relation}(inversedBy: '{$entityName}')]\n    #[ORM\\JoinColumn(name: '{$field->getName()}_id', referencedColumnName: 'id', nullable: " . ($field->getNullable() ? 'true' : 'false') . ")]";
 			} else {
-				if ($attributes['type'] === "string") {
+				if ($field->getType()->value === "string") {
 					$ormColumn = "#[ORM\\Column(length: 255)]";
-				} elseif ($attributes['nullable'] === true) {
+				} elseif ($field->getNullable() === true) {
 					$ormColumn = "#[ORM\\Column(length: 255, nullable: true)]";
-				} elseif ($attributes['nullable'] === false) {
+				} elseif ($field->getNullable() === false) {
 					$ormColumn = "#[ORM\\Column(length: 255, nullable: false)]";
 				}
 
-				if ($attributes['type'] === "ID") {
+				if ($field->getType()->value === "ID") {
 					$ormColumn = "#[ORM\Id]\n       #[ORM\GeneratedValue]\n       #[ORM\Column]";
 				}
 			}
 
-			$properties .= "    $ormColumn\n    private $nullable$type \$$fieldName$defaultValue;\n\n";
-			$methods .= "    public function get" . ucfirst($fieldName) . "(): $nullable$type\n    {\n        return \$this->$fieldName;\n    }\n\n";
-			$methods .= "    public function set" . ucfirst($fieldName) . "($nullable$type \$$fieldName): static\n    {\n        \$this->$fieldName = \$$fieldName;\n\n        return \$this;\n    }\n\n";
+			$properties .= "    $ormColumn\n    private $nullable$type \${$field->getName()}$defaultValue;\n\n";
+			$methods .= "    public function get" . ucfirst($field->getName()) . "(): $nullable$type\n    {\n        return \$this->{$field->getName()};\n    }\n\n";
+			$methods .= "    public function set" . ucfirst($field->getName()) . "($nullable$type \${$field->getName()}): static\n    {\n        \$this->{$field->getName()} = \${$field->getName()};\n\n        return \$this;\n    }\n\n";
 		}
 
 		$entityCode = "<?php declare(strict_types = 1);\n\nnamespace $namespace;\n\n$useStatements\n$annotations\nclass $className\n{\n$properties$methods}\n";
+		$repositoryCode = "<?php declare(strict_types = 1);\n\nnamespace App\\Repository;\n\nuse App\\Entity\\$className;\nuse Doctrine\\Bundle\\DoctrineBundle\\Repository\\ServiceEntityRepository;\nuse Doctrine\\Persistence\\ManagerRegistry;\n\nclass {$className}Repository extends ServiceEntityRepository\n{\n    public function __construct(ManagerRegistry \$registry)\n    {\n        parent::__construct(\$registry, $className::class);\n    }\n}\n";
 
-		return self::createFile($entityCode, $className);
+		$entityCreated = self::createFile($entityCode, $className);
+		$repositoryCreated = self::createFile($repositoryCode, "{$className}Repository", "src/Repository");
+
+		return $entityCreated || $repositoryCreated;
 	}
 
-	private static function createFile(string $entityCode, string $className): bool
+	private static function createFile(string $code, string $className, string $directory = "src/Entity"): bool
 	{
 		$changesMade = false;
-		$filePath = "src/Entity/$className.php";
+		$filePath = "$directory/$className.php";
 		if (file_exists($filePath)) {
 			$existingCode = file_get_contents($filePath);
-			if ($existingCode !== $entityCode) {
-				file_put_contents($filePath, $entityCode);
+			if ($existingCode !== $code) {
+				file_put_contents($filePath, $code);
 				$changesMade = true;
 			}
 		} else {
-			file_put_contents($filePath, $entityCode);
+			file_put_contents($filePath, $code);
 			$changesMade = true;
 		}
 

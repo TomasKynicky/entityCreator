@@ -25,44 +25,19 @@ composer require tomaskynicky/entity-creator:dev-main
 
 This package is open-source software licensed under the [MIT license]
 
-## 🖥️ Usage
+## 🖥️ Input
 
 ```php
-use App\EntityCreator;
-
-$arrayData = [
-     "Products" => [
-         "id" => [
-            "type" => "ID",
-            "nullable" => false,
-            ],
-         "title" => [
-               "type" => "string",
-                "length" => 255,
-                "nullable" => false,
-            ],
-         "price" => [
-            "type" => "float",
-            "length" => 10,
-            "nullable" => false,
-            ],
-     ]
-     "Orders" => [
-         "id" => [
-            "type" => "ID",
-            "nullable" => false,
-            ],
-         "products" => [
-               "type" => "Products",
-                "nullable" => false,
-                "relation" => "ManyToOne"
-            ],
-         "price" => [
-            "type" => "float",
-            "length" => 10,
-            "nullable" => false,
-            ],
-     ]
-];
-
-$entity = EntityCreator::fromArray($arrayData);
+		$arrayData = [
+			new EntityDTO(
+				name: 'User',
+				fields: [
+					new FieldsDTO(
+						name: 'name',
+						type: DataType::STRING,
+						length: '255',
+						nullable: true
+					)
+				]
+			),
+		];
