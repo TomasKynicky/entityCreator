@@ -28,7 +28,6 @@ This package is open-source software licensed under the [MIT license]
 ## ⌨️️ Example
 
 ```php
-
 <?php declare(strict_types = 1);
 
 namespace App\Command;
