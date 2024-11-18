@@ -30,22 +30,19 @@ final class EntityCreator
 			$ormColumn = "";
 			$length = $field->getLength();
 
-			if ($type === null && $field->getRelationTo() !== null)
+			if ($field->getRelationTo() !== null)
 			{
 				$type = $field->getRelationTo();
-			}
-
-			if ($field->getRelation() !== null) {
 				$relation = $field->getRelation()->value;
-				$ormColumn = "#[ORM\\{$relation}(inversedBy: '{$entityName}')]\n    #[ORM\\JoinColumn(name: '{$field->getName()}_id', referencedColumnName: 'id', nullable: " . ($field->getNullable() ? 'true' : 'false') . ")]";
+				$ormColumn = "#[ORM\\{$relation}(targetEntity: {$type}::class, inversedBy: '{$entityName}')]\n    #[ORM\\JoinColumn(name: '{$field->getName()}_id', referencedColumnName: 'id', nullable: " . ($field->getNullable() ? 'true' : 'false') . ")]";
 			}
 
 			if ($field->getType()->value === "string") {
-				$ormColumn = "#[ORM\\Column(length: '{$length}')]";
-			} elseif ($field->getNullable() === true) {
-				$ormColumn = "#[ORM\\Column(length: '{$length}', nullable: true)]";
-			} elseif ($field->getNullable() === false) {
-				$ormColumn = "#[ORM\\Column(length: '{$length}', nullable: false)]";
+				$ormColumn = "#[ORM\\Column(length: {$length})]";
+			} elseif ($field->getType()->value === "string" && $field->getNullable() === true) {
+				$ormColumn = "#[ORM\\Column(length: {$length}, nullable: true)]";
+			} elseif ($field->getType()->value === "string" && $field->getNullable() === false) {
+				$ormColumn = "#[ORM\\Column(length: {$length}, nullable: false)]";
 			}
 
 			if($field->getType()->value === "int")
@@ -53,7 +50,7 @@ final class EntityCreator
 				$ormColumn = "#[ORM\Column]";
 			}
 
-			if ($field->getType()->value === "ID") {
+			if ($field->getType()->name === "ID") {
 				$ormColumn = "#[ORM\Id]\n       #[ORM\GeneratedValue]\n       #[ORM\Column]";
 			}
 

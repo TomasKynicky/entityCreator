@@ -17,5 +17,6 @@ enum DataType: string
 	case TEXT = 'text';
 	case JSON = 'json';
 	case ID = 'int';
+	case RELATION = 'relation';
 
 }
