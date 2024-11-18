@@ -10,8 +10,9 @@ final readonly class FieldsDTO
 
 	public function __construct(
 		private string $name,
-		private DataType $type,
-		private ?string $length = null,
+		private ?DataType $type = null,
+		private ?string $length = "255",
+		private ?string $relationTo = null,
 		private ?RelationType $relation = null,
 		private ?bool $nullable = false,
 	)
@@ -26,7 +27,7 @@ final readonly class FieldsDTO
 		return $this->name;
 	}
 
-	public function getType(): DataType
+	public function getType(): ?DataType
 	{
 		return $this->type;
 	}
@@ -51,6 +52,16 @@ final readonly class FieldsDTO
 	{
 		return $this->nullable;
 	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getRelationTo(): ?string
+	{
+		return $this->relationTo;
+	}
+
+
 
 
 }

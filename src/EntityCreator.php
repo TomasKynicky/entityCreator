@@ -3,8 +3,7 @@
 namespace Tomaskynicky\EntityCreator;
 
 use Tomaskynicky\EntityCreator\DTO\EntityDTO;
-use Tomaskynicky\EntityCreator\Enum\DataType;
-use Tomaskynicky\EntityCreator\Enum\RelationType;
+
 
 final class EntityCreator
 {
@@ -13,6 +12,7 @@ final class EntityCreator
 	{
 		self::entityRenderer($entityDTO);
 	}
+
 	private static function entityRenderer(EntityDTO $entityDTO): bool
 	{
 		$className = ucfirst($entityDTO->getName());
@@ -28,22 +28,33 @@ final class EntityCreator
 			$defaultValue = $field->getNullable() ? ' = null' : '';
 			$type = $field->getType()->value;
 			$ormColumn = "";
+			$length = $field->getLength();
+
+			if ($type === null && $field->getRelationTo() !== null)
+			{
+				$type = $field->getRelationTo();
+			}
 
 			if ($field->getRelation() !== null) {
 				$relation = $field->getRelation()->value;
 				$ormColumn = "#[ORM\\{$relation}(inversedBy: '{$entityName}')]\n    #[ORM\\JoinColumn(name: '{$field->getName()}_id', referencedColumnName: 'id', nullable: " . ($field->getNullable() ? 'true' : 'false') . ")]";
-			} else {
-				if ($field->getType()->value === "string") {
-					$ormColumn = "#[ORM\\Column(length: 255)]";
-				} elseif ($field->getNullable() === true) {
-					$ormColumn = "#[ORM\\Column(length: 255, nullable: true)]";
-				} elseif ($field->getNullable() === false) {
-					$ormColumn = "#[ORM\\Column(length: 255, nullable: false)]";
-				}
+			}
 
-				if ($field->getType()->value === "ID") {
-					$ormColumn = "#[ORM\Id]\n       #[ORM\GeneratedValue]\n       #[ORM\Column]";
-				}
+			if ($field->getType()->value === "string") {
+				$ormColumn = "#[ORM\\Column(length: '{$length}')]";
+			} elseif ($field->getNullable() === true) {
+				$ormColumn = "#[ORM\\Column(length: '{$length}', nullable: true)]";
+			} elseif ($field->getNullable() === false) {
+				$ormColumn = "#[ORM\\Column(length: '{$length}', nullable: false)]";
+			}
+
+			if($field->getType()->value === "int")
+			{
+				$ormColumn = "#[ORM\Column]";
+			}
+
+			if ($field->getType()->value === "ID") {
+				$ormColumn = "#[ORM\Id]\n       #[ORM\GeneratedValue]\n       #[ORM\Column]";
 			}
 
 			$properties .= "    $ormColumn\n    private $nullable$type \${$field->getName()}$defaultValue;\n\n";

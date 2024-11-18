@@ -16,5 +16,6 @@ enum DataType: string
 	case TIME = 'time';
 	case TEXT = 'text';
 	case JSON = 'json';
+	case ID = 'int';
 
 }
